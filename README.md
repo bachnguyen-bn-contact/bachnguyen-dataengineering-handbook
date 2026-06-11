@@ -40,17 +40,5 @@ this site is where I keep my working notes on all of it.
 
 ---
 
-## About this site (for me)
-
-A single self-contained `index.html` — all styles, scripts, and content are inline, so there are
-no separate asset files that can fail to load. It uses clean URLs via the History API
-(`/home`, `/fabric/onelake`, `/dp700/exam-overview`, `/resume`); the `_redirects` file tells
-Netlify to serve `index.html` for any path so deep links and refreshes work.
-
-**Deploy:** push this folder to the GitHub repo connected to Netlify (auto-deploys), or drag the
-whole `bach-site` folder onto Netlify. Keep `index.html`, `_redirects`, and
-`Bach_Nguyen_Resume.pdf` together so the Resume download works.
-
-**Light-mode palette** is adapted from a friend's Fabric guide (CoxHealth blue on white), with
-my own navy dark mode. Fabric/DP-700 content is summarised from Microsoft Learn and linked there;
-this site is independent and not affiliated with or endorsed by Microsoft.
+## About my site 
+This site is independent and not affiliated with or endorsed by Microsoft.
