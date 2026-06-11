@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bach Nguyen · Data Engineer</title>
+<meta name="description" content="Bach Nguyen - Data Engineer. A Microsoft Fabric handbook, a DP-700 study path, a blog, and my resume." />
+<script>
+(function(){try{var s=localStorage.getItem('bn-theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',s||(d?'dark':'light'));}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ===== Bach Nguyen - Data Engineer : styles =====
+   Light mode palette adapted from Rajan Shukla's Fabric Guide (CoxHealth blue on white). */
+
+:root[data-theme="light"]{
+  --bg:#f3f7fb; --bg-alt:#eaf1f8; --surface:#ffffff; --surface-2:#f0f6fd;
+  --ink:#15324a; --ink-soft:#42586c; --muted:#5d7387; --faint:#8aa0b2;
+  --line:#e0e8f1; --line-soft:#eef3f9;
+  --accent:#0072CE; --accent-2:#004B87; --accent-ink:#ffffff; --accent-soft:#e7f1fb; --accent-soft-2:#f0f6fd;
+  --code-bg:#f5f8fc; --code-ink:#1c3a55; --code-line:#e4ecf5; --code-head:#eef3f9;
+  --shadow:0 1px 2px rgba(20,50,80,.05), 0 18px 40px -30px rgba(20,50,80,.4);
+}
+:root[data-theme="dark"]{
+  --bg:#0c1622; --bg-alt:#0f1b2a; --surface:#13202f; --surface-2:#172838;
+  --ink:#e8eef5; --ink-soft:#c3d2e0; --muted:#8ba0b5; --faint:#6f859b;
+  --line:rgba(232,238,245,.13); --line-soft:rgba(232,238,245,.07);
+  --accent:#3aa0ff; --accent-2:#7bc0ff; --accent-ink:#04121f; --accent-soft:rgba(58,160,255,.16); --accent-soft-2:rgba(58,160,255,.09);
+  --code-bg:#0a131f; --code-ink:#cfe0f0; --code-line:rgba(232,238,245,.1); --code-head:#101d2c;
+  --shadow:0 20px 50px -28px rgba(0,0,0,.8);
+}
+:root{
+  --maxw:1180px; --pad:clamp(1rem,4vw,2rem);
+  --font-display:"Space Grotesk",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation-duration:.001ms!important;transition-duration:.001ms!important;}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;transition:background-color .3s,color .3s;}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.14;letter-spacing:-.01em;margin:0;}
+p{margin:0 0 1rem;}
+a{color:var(--accent);text-decoration:none;}
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad);}
+.accent{color:var(--accent);}
+.skip-link{position:absolute;left:-999px;top:0;z-index:100;background:var(--accent);color:var(--accent-ink);padding:.6rem 1rem;border-radius:0 0 8px 0;font-weight:600;}
+.skip-link:focus{left:0;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px;}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line);}
+.header-inner{display:flex;align-items:center;gap:1rem;height:60px;}
+.brand{display:inline-flex;align-items:center;gap:.6rem;color:var(--ink);font-family:var(--font-display);}
+.brand-mark{display:inline-grid;grid-template-columns:repeat(3,5px);gap:3px;}
+.brand-mark span{width:5px;height:18px;border-radius:2px;background:var(--accent);}
+.brand-mark span:nth-child(1){opacity:.5;}
+.brand-mark span:nth-child(2){opacity:.75;height:14px;align-self:center;}
+.brand-text{display:flex;flex-direction:column;line-height:1.05;font-size:1rem;letter-spacing:-.02em;font-weight:600;}
+.brand-text small{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:400;}
+.site-nav{margin-left:auto;display:flex;gap:.15rem;overflow-x:auto;scrollbar-width:none;}
+.site-nav::-webkit-scrollbar{display:none;}
+.site-nav a{color:var(--muted);font-size:.86rem;font-weight:500;padding:.4rem .65rem;border-radius:7px;white-space:nowrap;transition:color .15s,background-color .15s;}
+.site-nav a:hover{color:var(--ink);background:var(--accent-soft-2);}
+.site-nav a.is-active{color:var(--accent-2);background:var(--accent-soft);font-weight:600;}
+.theme-toggle{flex:none;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;transition:transform .2s,border-color .2s,color .2s;}
+.theme-toggle:hover{transform:rotate(-12deg);color:var(--accent);border-color:var(--accent);}
+.icon-sun{display:none;}
+:root[data-theme="dark"] .icon-moon{display:none;}
+:root[data-theme="dark"] .icon-sun{display:block;}
+
+#app{min-height:60vh;}
+.view-enter{animation:vIn .4s ease both;}
+@keyframes vIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* ===== home ===== */
+.home{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad);}
+.hero{position:relative;overflow:hidden;padding:clamp(3rem,8vw,5rem) 0 clamp(2rem,4vw,3rem);}
+.hero-weave{position:absolute;inset:0 -50vw;pointer-events:none;opacity:.6;background:repeating-linear-gradient(90deg,var(--line-soft) 0 1px,transparent 1px 46px),repeating-linear-gradient(0deg,var(--line-soft) 0 1px,transparent 1px 46px),radial-gradient(120% 90% at 78% -10%,var(--accent-soft),transparent 60%);-webkit-mask-image:linear-gradient(to bottom,black,transparent 82%);mask-image:linear-gradient(to bottom,black,transparent 82%);}
+.hero>*{position:relative;}
+.eyebrow{font-family:var(--font-mono);font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
+.hero h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:600;margin-bottom:1rem;color:var(--ink);}
+.lede{font-size:clamp(1rem,2vw,1.18rem);color:var(--ink-soft);max-width:64ch;}
+.block{padding-top:clamp(2rem,5vw,3rem);}
+.block-head{margin-bottom:1.3rem;}
+.block-head h2{font-size:clamp(1.4rem,3.2vw,2rem);font-weight:600;display:inline-block;padding-bottom:.4rem;border-bottom:3px solid var(--accent);}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.cat-card{display:flex;flex-direction:column;gap:.5rem;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.4rem;color:var(--ink);box-shadow:var(--shadow);transition:transform .2s,border-color .2s,box-shadow .2s;}
+.cat-card:hover{transform:translateY(-4px);border-color:var(--accent);}
+.cat-kind{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);}
+.cat-card h3{font-size:1.2rem;font-weight:600;}
+.cat-card p{color:var(--muted);font-size:.92rem;margin:0;flex:1;}
+.cat-meta{font-family:var(--font-mono);font-size:.78rem;color:var(--accent-2);margin-top:.3rem;}
+
+.author-card{display:flex;gap:1.5rem;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.7rem;box-shadow:var(--shadow);}
+.author-avatar{flex:none;width:80px;height:80px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(140deg,var(--accent),var(--accent-2));color:#fff;font-family:var(--font-display);font-weight:700;font-size:1.6rem;}
+.author-name{font-size:1.35rem;font-weight:600;margin-bottom:.1rem;}
+.author-role{font-family:var(--font-mono);font-size:.82rem;color:var(--accent);margin-bottom:.85rem;}
+.author-intro{color:var(--ink-soft);max-width:66ch;}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 1.1rem;}
+.tag{font-family:var(--font-mono);font-size:.74rem;color:var(--accent-2);background:var(--accent-soft);padding:.26rem .58rem;border-radius:7px;}
+.contact-actions{display:flex;flex-wrap:wrap;gap:.55rem;}
+.btn{display:inline-flex;align-items:center;font-weight:600;font-size:.9rem;padding:.6rem 1.1rem;border-radius:9px;border:1px solid transparent;transition:transform .18s,background-color .2s,border-color .2s,color .2s;}
+.btn:hover{transform:translateY(-2px);}
+.btn-primary{background:var(--accent);color:var(--accent-ink);}
+.btn-primary:hover{background:var(--accent-2);}
+.btn-ghost{border-color:var(--line);color:var(--ink);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ===== category page (sidebar + cards) ===== */
+.cat-page{display:grid;grid-template-columns:248px 1fr;align-items:start;max-width:var(--maxw);margin-inline:auto;}
+.cat-side{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;border-right:1px solid var(--line);background:var(--surface);padding:1.3rem .85rem;scrollbar-width:thin;}
+.cat-side-head{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:0 .6rem;margin-bottom:.7rem;}
+.cat-side-toggle{display:none;}
+.cat-toc{display:flex;flex-direction:column;gap:1px;}
+.cat-toc a{display:block;padding:.5rem .65rem;border-radius:8px;color:var(--muted);font-size:.88rem;font-weight:500;border-left:2px solid transparent;transition:background .12s,color .12s;}
+.cat-toc a:hover{background:var(--accent-soft-2);color:var(--ink);}
+.cat-toc a.active{background:var(--accent-soft);color:var(--accent-2);font-weight:600;}
+.cat-toc .toc-date{display:block;font-family:var(--font-mono);font-size:.66rem;color:var(--faint);font-weight:400;margin-top:1px;}
+
+.cat-main{min-width:0;}
+.cat-topbar{position:sticky;top:60px;z-index:10;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:.85rem clamp(1rem,3vw,2.2rem);}
+.cat-intro{max-width:820px;margin:0 auto;padding:.4rem clamp(1rem,3vw,2.2rem) 0;}
+.cat-intro h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;color:var(--ink);margin-top:1.2rem;}
+.cat-intro .lede{margin-top:.6rem;}
+.search{position:relative;max-width:560px;margin:0 auto;}
+.search input{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-family:var(--font-body);font-size:.92rem;color:var(--ink);padding:.65rem .9rem .65rem 2.3rem;outline:none;transition:border .15s,box-shadow .15s;}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+.search .mag{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--faint);font-size:1rem;}
+.search .key{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);font-family:var(--font-mono);font-size:.7rem;color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:1px 6px;}
+
+.cat-content{max-width:820px;margin:0 auto;padding:.5rem clamp(1rem,3vw,2.2rem) 6rem;}
+section.doc{padding-top:1.6rem;}
+section.doc h1{font-size:clamp(1.5rem,3.4vw,2rem);font-weight:700;color:var(--accent-2);scroll-margin-top:130px;padding-bottom:.6rem;border-bottom:2px solid var(--accent-soft);margin-bottom:.2rem;}
+.sec-date{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);margin:.5rem 0 0;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.4rem 1.2rem;margin:1rem 0;box-shadow:var(--shadow);}
+.card h2{font-size:1.18rem;font-weight:600;color:var(--ink);scroll-margin-top:130px;margin-bottom:.2rem;display:flex;align-items:center;flex-wrap:wrap;gap:.2rem;}
+.card h3{font-size:1.02rem;font-weight:600;color:var(--ink);margin:1rem 0 .3rem;}
+.card p{margin:.6rem 0;color:var(--ink-soft);}
+.card strong{color:var(--ink);font-weight:600;}
+.card ul,.card ol{margin:.6rem 0 .8rem;padding-left:1.3rem;color:var(--ink-soft);}
+.card li{margin:.3rem 0;}
+.card li::marker{color:var(--accent);}
+.card a{text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--line);}
+.card a:hover{text-decoration-color:var(--accent);}
+.card code{font-family:var(--font-mono);font-size:.84em;background:var(--accent-soft);color:var(--accent-2);border:1px solid var(--line);padding:.05em .35em;border-radius:5px;}
+
+/* badges */
+.badge{display:inline-block;font-family:var(--font-mono);font-size:.62rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;padding:.12rem .5rem;border-radius:20px;margin-left:.1rem;border:1px solid;}
+.b-basics{color:#1d8a57;background:rgba(29,138,87,.12);border-color:rgba(29,138,87,.3);}
+.b-intermediate{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 30%,transparent);}
+.b-advanced{color:#7b4fc0;background:rgba(123,79,192,.14);border-color:rgba(123,79,192,.32);}
+
+/* callouts */
+.cb{border-radius:10px;padding:.7rem .9rem;margin:.9rem 0;font-size:.94rem;border:1px solid;border-left-width:3px;}
+.cb p{margin:0;color:var(--ink-soft);}
+.cb .cb-l{display:block;font-family:var(--font-mono);font-size:.66rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.25rem;}
+.cb-note{background:var(--accent-soft-2);border-color:color-mix(in srgb,var(--accent) 25%,transparent);border-left-color:var(--accent);}
+.cb-note .cb-l{color:var(--accent);}
+.cb-tip{background:rgba(29,138,87,.1);border-color:rgba(29,138,87,.28);border-left-color:#1d8a57;}
+.cb-tip .cb-l{color:#1d8a57;}
+.cb-warning{background:rgba(201,138,18,.1);border-color:rgba(201,138,18,.3);border-left-color:#c98a12;}
+.cb-warning .cb-l{color:#b8730a;}
+.cb-caution{background:rgba(212,73,59,.1);border-color:rgba(212,73,59,.3);border-left-color:#d4493b;}
+.cb-caution .cb-l{color:#c0392b;}
+
+/* code blocks */
+.code{margin:.9rem 0;border:1px solid var(--code-line);border-radius:10px;overflow:hidden;background:var(--code-bg);}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:.4rem .75rem;border-bottom:1px solid var(--code-line);background:var(--code-head);}
+.code-head .lang{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.copy{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);background:var(--surface);border:1px solid var(--line);padding:.18rem .65rem;border-radius:6px;cursor:pointer;transition:all .13s;}
+.copy:hover{color:var(--accent);border-color:var(--accent);}
+.copy.done{color:#1d8a57;border-color:#1d8a57;}
+.code pre{overflow-x:auto;padding:.8rem .9rem;margin:0;}
+.code code{font-family:var(--font-mono);font-size:.8rem;line-height:1.6;color:var(--code-ink);white-space:pre;}
+
+/* tables */
+.card table,section.doc table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.88rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+thead th{text-align:left;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:.55rem .7rem;background:var(--code-head);border-bottom:1px solid var(--line);}
+tbody td{padding:.55rem .7rem;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--accent-soft-2);}
+tbody td:first-child{color:var(--ink);font-weight:500;}
+.card blockquote{margin:.8rem 0;padding:.2rem 0 .2rem 1rem;border-left:3px solid var(--accent);color:var(--ink);}
+.card hr{border:0;height:1px;background:var(--line);margin:1.4rem 0;}
+.empty{color:var(--muted);}
+
+/* ===== resume ===== */
+.resume{max-width:880px;margin-inline:auto;padding:2rem var(--pad) 5rem;}
+.resume-head{border-bottom:2px solid var(--accent-soft);padding-bottom:1.1rem;margin-bottom:1.4rem;}
+.resume-head h1{font-size:clamp(1.9rem,5vw,2.6rem);font-weight:700;color:var(--accent-2);}
+.resume-title{font-family:var(--font-mono);font-size:.9rem;color:var(--accent);letter-spacing:.03em;margin:.3rem 0 .9rem;}
+.resume-contacts{display:flex;flex-wrap:wrap;gap:.4rem .9rem;font-size:.88rem;color:var(--muted);align-items:center;}
+.resume-contacts a{color:var(--accent);}
+.resume-contacts span.dot{color:var(--faint);}
+.resume-actions{margin-top:1rem;display:flex;flex-wrap:wrap;gap:.55rem;}
+.resume section{margin-top:1.8rem;}
+.resume h2{font-size:1.05rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:500;padding-bottom:.4rem;border-bottom:1px solid var(--line);margin-bottom:.9rem;}
+.resume-summary{color:var(--ink-soft);}
+.skill-row{display:grid;grid-template-columns:200px 1fr;gap:.6rem;padding:.4rem 0;border-bottom:1px solid var(--line-soft);font-size:.92rem;}
+.skill-row .k{font-weight:600;color:var(--ink);}
+.skill-row .v{color:var(--ink-soft);}
+.xp{margin-bottom:1.3rem;}
+.xp-head{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:baseline;}
+.xp-role{font-family:var(--font-display);font-weight:600;font-size:1.05rem;color:var(--ink);}
+.xp-org{color:var(--accent-2);font-weight:500;}
+.xp-dates{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);white-space:nowrap;}
+.xp ul{margin:.5rem 0 0;padding-left:1.2rem;color:var(--ink-soft);font-size:.93rem;}
+.xp li{margin:.35rem 0;}
+.xp li::marker{color:var(--accent);}
+.proj-name{font-family:var(--font-display);font-weight:600;color:var(--ink);}
+.proj-stack{font-family:var(--font-mono);font-size:.76rem;color:var(--muted);margin:.1rem 0 .3rem;}
+.edu-row{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.edu-school{font-weight:600;color:var(--ink);}
+.edu-degree{color:var(--ink-soft);}
+.edu-date{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);}
+
+/* footer */
+.site-footer{border-top:1px solid var(--line);background:var(--bg-alt);padding:2.2rem 0;margin-top:2rem;}
+.footer-inner{display:grid;gap:.5rem;}
+.footer-brand{font-family:var(--font-display);font-size:1.05rem;margin:0;}
+.footer-brand strong{font-weight:600;color:var(--accent);}
+.footer-note{color:var(--muted);font-size:.86rem;max-width:74ch;margin:0;}
+.footer-meta{color:var(--muted);font-size:.8rem;font-family:var(--font-mono);margin:.4rem 0 0;}
+
+/* crumbs (resume/404) */
+.crumbs{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);max-width:var(--maxw);margin-inline:auto;padding:1.2rem var(--pad) 0;}
+.crumbs a{color:var(--muted);} .crumbs a:hover{color:var(--accent);}
+
+/* responsive */
+@media (max-width:980px){
+  .cat-grid{grid-template-columns:1fr 1fr;}
+  .cat-page{display:block;}
+  .cat-side{position:sticky;top:60px;height:auto;max-height:none;border-right:none;border-bottom:1px solid var(--line);padding:.6rem var(--pad);}
+  .cat-side-head{display:none;}
+  .cat-side-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:.6rem .9rem;font-family:var(--font-body);font-size:.9rem;font-weight:600;color:var(--ink);cursor:pointer;}
+  .cat-toc{margin-top:.5rem;max-height:46vh;overflow-y:auto;}
+  .cat-toc.collapsed{display:none;}
+  .cat-topbar{top:60px;}
+  section.doc h1{scroll-margin-top:120px;}
+}
+@media (max-width:640px){
+  .cat-grid{grid-template-columns:1fr;}
+  .author-card{flex-direction:column;gap:1rem;}
+  .brand-text small{display:none;}
+  .skill-row{grid-template-columns:1fr;gap:.1rem;}
+}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/" data-link aria-label="Home">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="brand-text">Bach&nbsp;Nguyen<small>Data Engineer</small></span>
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Sections"></nav>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch colour theme">
+      <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.3" y1="5.3" x2="7" y2="7"/><line x1="17" y1="17" x2="18.7" y2="18.7"/><line x1="18.7" y1="5.3" x2="17" y2="7"/><line x1="7" y1="17" x2="5.3" y2="18.7"/></g></svg>
+    </button>
+  </div>
+</header>
+<main id="main"><div id="app" aria-live="polite"></div></main>
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p class="footer-brand">Bach&nbsp;Nguyen <strong>· Data Engineer</strong></p>
+    <p class="footer-note">Independent working notes. Microsoft Fabric and DP-700 content is summarised from Microsoft Learn and linked there; not affiliated with or endorsed by Microsoft. Verify against the official docs before relying on anything here.</p>
+    <p class="footer-meta">© <span id="year">2026</span> Bach Nguyen · Single-file site · Deployed on Netlify</p>
+  </div>
+</footer>
+
+<script>window.SITE = {"profile": {"name": "Bach Nguyen", "role": "Data Engineer", "tagline": "ELT pipelines, dimensional models & analytics at enterprise scale.", "heroLede": "Working notes from 2+ years building ELT pipelines and analytics on Microsoft Fabric, AWS and Azure - a Fabric handbook, a DP-700 study path, and the occasional write-up. More about me below.", "bio": "I'm a data engineer with 2+ years building ELT pipelines, dimensional data models and analytics solutions at enterprise scale - mostly in PySpark and SQL across AWS and Azure (Microsoft Fabric, Databricks). I've processed 50TB+ across 700+ tables and care about making data platforms teams can trust. This site is my working notes: a Fabric handbook, a DP-700 study path, and a blog.", "tools": ["Python", "SQL", "PySpark", "Apache Spark", "Microsoft Fabric", "AWS", "Azure", "Databricks", "dbt", "Airflow"], "calendly": "https://calendly.com/bachnguyen-bn-contact/1-on-1-meeting-with-bach", "github": "https://github.com/bachnguyen-bn-contact", "linkedin": "https://linkedin.com/in/ben1203/", "email": "bachthebusiness@gmail.com"}, "resume": {"name": "Bach Nguyen", "title": "Data Engineer", "contacts": {"email": "bachthebusiness@gmail.com", "linkedin": "linkedin.com/in/ben1203/", "linkedinUrl": "https://linkedin.com/in/ben1203/", "phone": "417-351-7946", "location": "Springfield, MO · Willing to relocate"}, "pdf": "Bach_Nguyen_Resume.pdf", "summary": "Data Engineer with 2+ years designing ELT pipelines, dimensional data models, and analytics solutions at enterprise scale with strong expertise in PySpark, SQL across cloud platforms (AWS and Azure), processing 50TB+ data across 700+ tables.", "skills": [{"label": "Languages", "value": "Python, SQL"}, {"label": "Data Processing & Visualization", "value": "Apache Spark, dbt, Apache Airflow, SSMS, Data Factory, AWS QuickSight, Power BI, Tableau"}, {"label": "Cloud", "value": "AWS (S3, Glue, Redshift, Lambda), Microsoft Azure (Fabric, Databricks)"}, {"label": "Certification", "value": "DP-700 — Microsoft Certified: Fabric Data Engineer Associate"}], "experience": [{"role": "Analytics Engineer II", "org": "CoxHealth", "location": "Springfield, MO", "dates": "Jan. 2026 – Present", "bullets": ["Architected end-to-end Workday-to-Microsoft Fabric ELT platform across a team of 5, processing 50M+ records/day via PySpark, ADF, and SQL; delivered 3 dbt semantic models consumed directly by C-suite and enterprise stakeholders.", "Improved Spark job throughput by 20% across a 2B+ row dataset by diagnosing and resolving data skew through strategic repartitioning, cutting stage-level shuffle overhead.", "Engineered a Workday SOAP API ingestion framework processing $4B+ in workforce financial data daily, serving as the primary data source for director-level and above reporting across the enterprise.", "Migrated 1.5B+ records from Oracle Cerner and Azure Synapse into Microsoft Fabric, decommissioning 2 legacy systems, enabling 8 enterprise reports, and saving $15M annually in licensing and infrastructure costs."]}, {"role": "Data Engineer", "org": "CoxHealth", "location": "Springfield, MO", "dates": "Jan. 2025 – Jan. 2026", "bullets": ["Designed a standardized ELT framework in PySpark, SQL, Airflow, and ADF supporting API and file ingestion with built-in CI/CD, validations, error logging, and metadata mappings, reducing pipeline development time by 75% across the team.", "Decommissioned Snowflake and accelerated project delivery by 30% by building 5 medallion-architecture ELT pipelines ingesting from AWS S3, Oracle, and Fabric, enabling 6 reports via metadata-driven PySpark and Airflow orchestration.", "Reclaimed 60TB+ of storage and saved $18K annually by building scalable data lake lifecycle management workflows, automating 1TB+ weekly cleanup, and enforcing governance policies across 700+ tables.", "Deployed org-wide AI workflows using Microsoft 365 Copilot and Azure AI Foundry agents (GPT-4.1) integrated into Teams, saving 25+ hours/month across 50 users including directors and C-suite, automating documentation and code review.", "Stabilized legacy pipeline infrastructure by resolving 50+ production tickets through root cause analysis and targeted optimizations, improving reliability and reducing recurring incident rate."]}, {"role": "Data Engineer Intern", "org": "CoxHealth", "location": "Springfield, MO", "dates": "Aug. 2024 – Dec. 2024", "bullets": ["Deployed an ELT pipeline using PySpark, SQL, and REST APIs migrating 400M+ rows of data from Oracle to Fabric.", "Recovered 2% of lost data in AWS S3 by resolving a migration defect by tracing errors across pipelines and models."]}, {"role": "Business Intelligence Intern", "org": "CoxHealth", "location": "Springfield, MO", "dates": "Jun. 2024 – Aug. 2024", "bullets": ["Designed a Power BI dashboard integrating 60+ datasets tracking operational performance across 30+ departments.", "Delivered 5+ SQL ad-hoc requests by integrating 800M+ records across Snowflake, Oracle, and Microsoft Fabric."]}], "projects": [{"name": "Real-Time E-Commerce Event Pipeline", "stack": "AWS Kinesis, Lambda, S3, Glue, Redshift", "bullets": ["Designed a real-time ELT pipeline ingesting 500K+ simulated daily clickstream events via AWS Kinesis, Lambda, S3 (Bronze), transforming to Parquet with AWS Glue (Silver), and loading a Star Schema into Amazon Redshift (Gold).", "Reduced average query latency by 40% through Redshift distribution key optimization and S3 partition pruning."]}], "education": [{"school": "Missouri State University", "degree": "Bachelor of Science in Data Analytics", "date": "Dec. 2024"}]}, "categories": [{"id": "fabric", "title": "Fabric Handbook", "kind": "handbook", "blurb": "Everything I keep coming back to about Microsoft Fabric - what it is, the core building blocks, and the patterns that show up in every project.", "articles": [{"slug": "what-is-fabric", "title": "What Microsoft Fabric is", "summary": "The one-platform idea and the workloads.", "body": "md-fabric-what-is-fabric"}, {"slug": "onelake", "title": "OneLake", "summary": "One copy of the data, shortcuts and mirroring.", "body": "md-fabric-onelake"}, {"slug": "lakehouse-warehouse", "title": "Lakehouse & Warehouse", "summary": "Two ways to work with OneLake data.", "body": "md-fabric-lakehouse-warehouse"}, {"slug": "pipelines", "title": "Pipelines & ingestion", "summary": "Orchestration with Data Factory and Dataflows Gen2.", "body": "md-fabric-pipelines"}, {"slug": "connect", "title": "Connecting to sources", "summary": "Connectors, gateways and auth.", "body": "md-fabric-connect"}, {"slug": "pyspark", "title": "PySpark", "summary": "Read/write Delta and fix data skew.", "body": "md-fabric-pyspark"}, {"slug": "sql", "title": "SQL (T-SQL)", "summary": "Set-based analytics on warehouse and endpoint.", "body": "md-fabric-sql"}, {"slug": "delta-medallion", "title": "Delta tables & the medallion pattern", "summary": "Bronze, Silver, Gold and table upkeep.", "body": "md-fabric-delta-medallion"}, {"slug": "data-quality", "title": "Data quality", "summary": "Validation, logging and recoverability.", "body": "md-fabric-data-quality"}, {"slug": "powerbi-direct-lake", "title": "Power BI & Direct Lake", "summary": "Semantic models served straight from OneLake.", "body": "md-fabric-powerbi-direct-lake"}, {"slug": "realtime", "title": "Real-Time Intelligence", "summary": "Eventstreams, Eventhouse and KQL.", "body": "md-fabric-realtime"}, {"slug": "security", "title": "Security & governance", "summary": "Roles and fine-grained data security.", "body": "md-fabric-security"}, {"slug": "cicd-monitoring", "title": "CI/CD, monitoring & decisions", "summary": "Git, deployment pipelines and when to use what.", "body": "md-fabric-cicd-monitoring"}]}, {"id": "dp700", "title": "DP-700 Handbook", "kind": "handbook", "blurb": "My curated route to the Microsoft Certified: Fabric Data Engineer Associate (DP-700) - the exam shape, the domains, resources, and a study plan.", "articles": [{"slug": "exam-overview", "title": "Exam overview", "summary": "Format, scoring, renewal, and how DP-700 replaced DP-203.", "body": "md-dp700-exam-overview"}, {"slug": "domains", "title": "The three domains", "summary": "What each equally-weighted domain actually tests.", "body": "md-dp700-domains"}, {"slug": "official-resources", "title": "Official resources", "summary": "The Microsoft Learn pages to anchor your prep on.", "body": "md-dp700-official-resources"}, {"slug": "study-plan-and-advice", "title": "Study plan & advice", "summary": "A 6-8 week plan plus hard-won advice.", "body": "md-dp700-study-plan-and-advice"}, {"slug": "community-resources", "title": "Community resources", "summary": "Trustworthy community guides - and what to avoid.", "body": "md-dp700-community-resources"}]}, {"id": "blog", "title": "Blog", "kind": "blog", "blurb": "Notes, write-ups and things I've learned along the way.", "articles": [{"slug": "welcome", "title": "Why I built this site", "summary": "A place for my working notes on data engineering.", "date": "2026-06-11", "body": "md-blog-welcome"}, {"slug": "onelake-shortcuts-vs-mirroring", "title": "OneLake shortcuts vs mirroring", "summary": "Two ways to bring outside data into Fabric without a full copy job.", "date": "2026-06-09", "body": "md-blog-onelake-shortcuts-vs-mirroring"}]}]};</script>
+<script type="text/markdown" id="md-fabric-what-is-fabric">
+# What Microsoft Fabric is
+
+## The one-platform idea [Basics]
+
+Microsoft Fabric is a unified, software-as-a-service (SaaS) analytics platform. Instead of stitching together separate products for ingestion, storage, transformation and reporting, Fabric brings those stages into one environment that runs on shared compute and a shared store.
+
+The practical payoff: data and artifacts move between workloads **without being copied**. A table written by a Spark notebook can be queried by the SQL endpoint, modelled in Power BI, and acted on in Real-Time Intelligence — all over the same physical data.
+
+## The workloads [Basics]
+
+| Workload | What it's for |
+|---|---|
+| **Data Factory** | Pipelines and Dataflows Gen2 for ingesting and orchestrating data. |
+| **Data Engineering** | Spark notebooks and lakehouses for large-scale transformation. |
+| **Data Warehouse** | A transactional T-SQL warehouse for set-based analytics. |
+| **Real-Time Intelligence** | Eventstreams, Eventhouse and KQL for data in motion. |
+| **Data Science** | Notebooks, experiments and models, with semantic link to Power BI. |
+| **Power BI** | Semantic models and reports — the serving layer. |
+
+> [!NOTE]
+> Fabric ships updates monthly, so it pays to track what is in **preview** versus **generally available** before you depend on a feature.
+
+## Where to go next
+
+- [OneLake](/fabric/onelake) — the single store everything sits on.
+- Official: [What is Microsoft Fabric](https://learn.microsoft.com/en-us/fabric/fundamentals/microsoft-fabric-overview)
+</script>
+
+<script type="text/markdown" id="md-fabric-onelake">
+# OneLake
+
+## One copy of the data [Basics]
+
+OneLake is the single, tenant-wide data lake, built on open Delta/Parquet formats over ADLS Gen2. There is **one logical copy** of the data, and every workload reads and writes that same store. Think of it as "OneDrive for data" — provisioned automatically, with no infrastructure to stand up.
+
+## Shortcuts [Intermediate]
+
+A shortcut is a pointer that surfaces data living elsewhere — another OneLake location, ADLS, Amazon S3, Google Cloud Storage — as if it were local. The data is **referenced in place**, not copied, so there is no duplication and no sync job to maintain.
+
+> [!TIP]
+> Use a shortcut when the data already lives in a lake you can reach and you want it queryable now, with zero duplication.
+
+## Mirroring [Intermediate]
+
+Mirroring brings an external operational database (Azure SQL, Cosmos DB, Snowflake) into OneLake and keeps it in **near-real-time sync**, landing it in open format — without you building change-data-capture by hand.
+
+## Where to go next
+
+- [Lakehouse & Warehouse](/fabric/lakehouse-warehouse) — the two ways to work with OneLake data.
+- Official: [OneLake documentation](https://learn.microsoft.com/en-us/fabric/onelake/onelake-overview)
+</script>
+
+<script type="text/markdown" id="md-fabric-lakehouse-warehouse">
+# Lakehouse & Warehouse
+
+## Lakehouse [Basics]
+
+A lakehouse combines the flexibility of a data lake with warehouse-style analytics. You can work with the same Delta tables two ways: **Spark** (notebooks in PySpark, Scala or Spark SQL) for heavy transformation, and the read-only **SQL analytics endpoint** for T-SQL queries.
+
+## Warehouse [Basics]
+
+The warehouse is a full T-SQL experience with transactional (ACID) guarantees and write support — aimed at engineers and analysts who prefer set-based SQL development.
+
+## Which one? [Intermediate]
+
+> [!NOTE]
+> Reach for the **lakehouse** when the work is Spark- and file-centric; reach for the **warehouse** when it is T-SQL- and table-centric. Both store data in OneLake, so you are never locked into one.
+
+## Where to go next
+
+- [Delta tables & the medallion pattern](/fabric/delta-medallion)
+- Official: [Lakehouse vs warehouse decision guide](https://learn.microsoft.com/en-us/fabric/fundamentals/decision-guide-lakehouse-warehouse)
+</script>
+
+<script type="text/markdown" id="md-fabric-pipelines">
+# Pipelines & ingestion
+
+## Data pipelines [Basics]
+
+Pipelines (the Fabric Data Factory experience) orchestrate work: copy activities, notebook runs, dataflows, stored procedures, and control flow with conditions and loops. They are how you schedule and chain the steps of an end-to-end load.
+
+## Dataflows Gen2 [Basics]
+
+Dataflows Gen2 give a low-code, Power Query interface for transforming data on the way in — handy for analysts and for lighter shaping that does not need Spark.
+
+## Orchestration choices [Intermediate]
+
+| Need | Reach for |
+|---|---|
+| Schedule and chain steps | **Pipeline** |
+| Low-code transforms | **Dataflow Gen2** |
+| Heavy/custom transforms | **Spark notebook** |
+
+> [!TIP]
+> A common pattern: a pipeline triggers a notebook for transformation, then a second activity refreshes a semantic model — all on a schedule or an event trigger.
+
+## Where to go next
+
+- [Connecting to sources](/fabric/connect)
+- Official: [Data Factory in Fabric](https://learn.microsoft.com/en-us/fabric/data-factory/data-factory-overview)
+</script>
+
+<script type="text/markdown" id="md-fabric-connect">
+# Connecting to sources
+
+## Connectors [Basics]
+
+Fabric ships hundreds of connectors for databases, SaaS apps, files and cloud storage. The copy activity in a pipeline and the source step in a Dataflow Gen2 both draw from the same connector library.
+
+## On-premises data [Intermediate]
+
+To reach data behind your firewall, install the **on-premises data gateway** and reference it from your connection. It brokers traffic securely between Fabric and the source.
+
+## Authentication [Intermediate]
+
+> [!CAUTION]
+> Prefer managed identities, service principals or OAuth over embedding credentials. Store secrets in a vault, not in notebook cells or pipeline parameters.
+
+## Where to go next
+
+- [PySpark](/fabric/pyspark) — transform what you have ingested.
+- Official: [Connectors in Fabric](https://learn.microsoft.com/en-us/fabric/data-factory/connector-overview)
+</script>
+
+<script type="text/markdown" id="md-fabric-pyspark">
+# PySpark
+
+## Read and write Delta [Basics]
+
+The workhorse for large-scale transformation in Data Engineering notebooks. Distributed DataFrame operations over the lakehouse.
+
+```python
+df = spark.read.format("delta").load("Tables/bronze_orders")
+clean = df.dropDuplicates(["order_id"]).filter(df.amount > 0)
+clean.write.mode("overwrite").saveAsTable("silver_orders")
+```
+
+## Fixing data skew [Advanced]
+
+When one partition is far larger than the rest, a few tasks run long while the cluster idles. Diagnose skew in the Spark UI, then redistribute.
+
+```python
+# repartition on a higher-cardinality key to even out work
+balanced = clean.repartition(200, "customer_id")
+```
+
+> [!TIP]
+> Repartitioning on a well-chosen key cuts stage-level shuffle and can meaningfully lift throughput on large datasets.
+
+## Where to go next
+
+- [SQL (T-SQL)](/fabric/sql)
+- Official: [Use notebooks in Fabric](https://learn.microsoft.com/en-us/fabric/data-engineering/how-to-use-notebook)
+</script>
+
+<script type="text/markdown" id="md-fabric-sql">
+# SQL (T-SQL)
+
+## Set-based analytics [Basics]
+
+T-SQL is the language of the warehouse and the lakehouse SQL analytics endpoint. Joins, aggregations and window functions — the bread and butter of analytics.
+
+```sql
+SELECT region, SUM(amount) AS revenue
+FROM gold.sales
+WHERE order_date >= '2026-01-01'
+GROUP BY region
+ORDER BY revenue DESC;
+```
+
+## Endpoint vs warehouse [Intermediate]
+
+The lakehouse **SQL analytics endpoint** is read-only over your Delta tables; the **warehouse** supports full read/write T-SQL with transactions. Same language, different write capabilities.
+
+## Where to go next
+
+- [Delta tables & the medallion pattern](/fabric/delta-medallion)
+- Official: [Query the SQL analytics endpoint](https://learn.microsoft.com/en-us/fabric/data-engineering/lakehouse-sql-analytics-endpoint)
+</script>
+
+<script type="text/markdown" id="md-fabric-delta-medallion">
+# Delta tables & the medallion pattern
+
+## Delta as the table format [Basics]
+
+Fabric tables are Delta (Parquet plus a transaction log), giving ACID writes, time travel and schema enforcement over files in OneLake. Both Spark and SQL read the same Delta tables.
+
+## Bronze, Silver, Gold [Basics]
+
+Most lakehouse designs organise data into quality tiers:
+
+- **Bronze** — raw, landed as-is, full history. Your replayable record.
+- **Silver** — cleansed, de-duplicated, conformed into consistent entities.
+- **Gold** — aggregated, business-ready tables and semantic models for consumption.
+
+> [!NOTE]
+> Keep Bronze append-only. If a downstream layer has a bug, you can always reprocess from Bronze rather than re-ingesting from the source.
+
+## Keeping tables healthy [Advanced]
+
+Compact small files and tidy history so reads stay fast.
+
+```sql
+OPTIMIZE silver_orders;
+VACUUM silver_orders RETAIN 168 HOURS;
+```
+
+## Where to go next
+
+- [Data quality](/fabric/data-quality)
+- Official: [Delta Lake table optimization](https://learn.microsoft.com/en-us/fabric/data-engineering/delta-optimization-and-v-order)
+</script>
+
+<script type="text/markdown" id="md-fabric-data-quality">
+# Data quality
+
+## Validate on the way through [Intermediate]
+
+Trustworthy Gold tables start with checks in Silver: enforce types, reject or quarantine bad rows, and assert row counts and key uniqueness before you publish.
+
+## Built-in error logging [Intermediate]
+
+A reusable ELT framework should capture validation failures, log them with context, and surface metadata mappings — so a bad load is visible and diagnosable rather than silent.
+
+> [!CAUTION]
+> Silent data quality failures are the expensive kind. Fail loudly, log clearly, and make the last-good state recoverable.
+
+## Where to go next
+
+- [Power BI & Direct Lake](/fabric/powerbi-direct-lake)
+- Official: [Data Activator and monitoring](https://learn.microsoft.com/en-us/fabric/data-activator/data-activator-introduction)
+</script>
+
+<script type="text/markdown" id="md-fabric-powerbi-direct-lake">
+# Power BI & Direct Lake
+
+## Semantic models [Basics]
+
+Power BI is the serving layer. Semantic models define the measures (in DAX) and relationships that reports and stakeholders consume.
+
+```dax
+Total Revenue = SUMX( Sales, Sales[Quantity] * Sales[UnitPrice] )
+```
+
+## Direct Lake [Intermediate]
+
+Direct Lake is a storage mode that reads Delta/Parquet **straight from OneLake** — close to import speed without a separate refresh, and fresher than DirectQuery. A strong default for models built on lakehouse or warehouse tables.
+
+> [!TIP]
+> Build Gold tables with reporting in mind (right grain, clean keys) and Direct Lake models stay fast with little tuning.
+
+## Where to go next
+
+- [Real-Time Intelligence](/fabric/realtime)
+- Official: [Direct Lake overview](https://learn.microsoft.com/en-us/fabric/fundamentals/direct-lake-overview)
+</script>
+
+<script type="text/markdown" id="md-fabric-realtime">
+# Real-Time Intelligence
+
+## Data in motion [Intermediate]
+
+Real-Time Intelligence ingests, stores, queries and acts on streaming data. **Eventstreams** route events, the **Eventhouse** stores them, and **Activator** triggers actions on conditions.
+
+## KQL [Intermediate]
+
+Kusto Query Language queries high-volume event and telemetry data. If you come from a SQL-only background, this is usually the biggest new thing to learn.
+
+```kql
+Orders
+| where Timestamp > ago(1h)
+| summarize revenue = sum(Amount) by Region
+| order by revenue desc
+```
+
+## Where to go next
+
+- [Security & governance](/fabric/security)
+- Official: [Real-Time Intelligence overview](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/overview)
+</script>
+
+<script type="text/markdown" id="md-fabric-security">
+# Security & governance
+
+## Workspace roles [Basics]
+
+Access starts at the workspace: Admin, Member, Contributor and Viewer roles control who can build, run and read. Grant the least privilege that lets someone do their job.
+
+## Fine-grained security [Advanced]
+
+Within items you can apply **row-level**, **column-level** and **object-level** security, plus **dynamic data masking**. OneLake security and **sensitivity labels** extend protection to the data itself.
+
+> [!CAUTION]
+> Test security as the end user, not as an admin. Admins often bypass the very rules you are trying to verify.
+
+## Where to go next
+
+- [CI/CD, monitoring & decisions](/fabric/cicd-monitoring)
+- Official: [Security in Microsoft Fabric](https://learn.microsoft.com/en-us/fabric/security/security-overview)
+</script>
+
+<script type="text/markdown" id="md-fabric-cicd-monitoring">
+# CI/CD, monitoring & decisions
+
+## Git integration & deployment pipelines [Intermediate]
+
+Connect a workspace to Git for version control of Fabric items, and use **deployment pipelines** to promote content across Dev, Test and Prod with controlled, repeatable releases.
+
+## Monitoring [Intermediate]
+
+Use the Monitoring hub to track pipeline and item runs, spot failures, and watch capacity usage. Wire alerts so problems find you, not the other way around.
+
+## When to use what [Intermediate]
+
+| Goal | Reach for |
+|---|---|
+| Big file transforms | PySpark / Spark SQL |
+| Set-based analytics with writes | Warehouse (T-SQL) |
+| Streaming / telemetry | Real-Time Intelligence (KQL) |
+| Low-code shaping | Dataflow Gen2 |
+| Report metrics | Power BI (DAX) |
+
+## Where to go next
+
+- Back to [What Microsoft Fabric is](/fabric/what-is-fabric)
+- Official: [Fabric CI/CD](https://learn.microsoft.com/en-us/fabric/cicd/cicd-overview)
+</script>
+
+<script type="text/markdown" id="md-dp700-exam-overview">
+# Exam overview
+
+**DP-700** earns you the *Microsoft Certified: Fabric Data Engineer Associate* credential. It validates that you can design, implement, secure, monitor and optimise data engineering solutions on Microsoft Fabric.
+
+## The shape of the exam
+
+| | |
+|---|---|
+| Format | Proctored, role-based; can include case studies and interactive items |
+| Length | ~100 minutes |
+| Questions | Roughly 40–60 |
+| Passing score | 700 out of 1000 (scaled scoring) |
+| Prerequisites | None, but you'll need real SQL, PySpark and KQL ability |
+| Renewal | Annually, free, via an online assessment on Microsoft Learn |
+| In-exam help | Microsoft Learn docs are available in a split-screen during the exam |
+
+Because scoring is scaled, the smart move is **broad coverage across all three domains** rather than chasing a specific raw number of correct questions.
+
+## It replaced DP-203
+
+DP-700 is the Fabric-era successor for data engineers. The older Azure Data Engineer exam, **DP-203, retired in 2025**, and Microsoft now steers new candidates to Fabric role-based paths. The platform underneath is different: OneLake instead of raw Data Lake Storage, and KQL alongside SQL.
+
+If you're sitting on half-finished DP-203 prep, set it aside — that exam no longer exists.
+
+## A moving target
+
+Fabric updates monthly, and the exam's *"skills measured as of"* date moves with it. Always open the [official study guide](/dp700/official-resources) and check that date before you start, because new (sometimes preview) features can appear on the exam.
+
+## Where to go next
+
+- **[The three domains](/dp700/domains)** — what's actually tested.
+- **Official:** [Fabric Data Engineer Associate — Microsoft Learn](https://learn.microsoft.com/en-us/credentials/certifications/fabric-data-engineer-associate/)
+</script>
+
+<script type="text/markdown" id="md-dp700-domains">
+# The three domains
+
+DP-700 is split into three **equally weighted** domains, each worth roughly **30–35%** of the exam. That even split is a strategy in itself: you can't afford to skip any one of them.
+
+## 1. Implement and manage an analytics solution
+
+The foundational setup and governance layer of Fabric. Expect questions on:
+
+- **Workspace configuration** — Spark settings, domain settings, OneLake settings.
+- **Lifecycle management** — Git integration, deployment pipelines, database projects (CI/CD for Fabric items).
+- **Security and governance** — workspace- and item-level access, row-/column-/object-level security, dynamic data masking, sensitivity labels, OneLake security.
+- **Orchestration** — when to use Dataflow Gen2 vs. pipelines vs. notebooks; event-based triggers and scheduling.
+
+## 2. Ingest and transform data
+
+The core data engineering domain — getting data in and shaping it, for both batch and streaming patterns:
+
+- **Loading patterns** — full loads vs. incremental/upsert; choosing the right strategy.
+- **Batch** — pipelines, Dataflows Gen2, and Spark notebooks (PySpark / Spark SQL).
+- **Streaming** — Eventstreams and Real-Time Intelligence, querying with **KQL**.
+- **Transformation** — cleaning, conforming and modelling data across the medallion tiers.
+
+## 3. Monitor and optimise an analytics solution
+
+Keeping the solution healthy once it's running:
+
+- **Monitoring** — tracking pipeline and item runs, capacity usage, and failures.
+- **Troubleshooting** — diagnosing failed or slow workloads.
+- **Optimisation** — performance tuning across Spark, SQL and the lake (file sizes, partitioning, query patterns).
+
+## How to read this
+
+Map every bullet in the official *"Skills Measured"* list to something you've actually clicked through in a Fabric trial. The exam rewards hands-on familiarity far more than memorised definitions.
+
+## Where to go next
+
+- **[Study plan & advice](/dp700/study-plan-and-advice)** — turn these domains into a schedule.
+</script>
+
+<script type="text/markdown" id="md-dp700-official-resources">
+# Official resources
+
+Anchor your prep on Microsoft's own material first. Everything below is free and kept current with the platform.
+
+## Start here
+
+- **[Exam DP-700 study guide](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/dp-700)** — the authoritative skills-measured outline. Print it, and check off each bullet as you cover it. Note the *"skills measured as of"* date at the top.
+- **[Fabric Data Engineer Associate certification page](https://learn.microsoft.com/en-us/credentials/certifications/fabric-data-engineer-associate/)** — overview, scheduling, and the official **free practice assessment**.
+
+## Learn the platform
+
+- **[Microsoft Fabric documentation](https://learn.microsoft.com/en-us/fabric/)** — the full docs, available to you in a split-screen *during* the exam, so get comfortable navigating them now.
+- **[Get started with Microsoft Fabric (learning path)](https://learn.microsoft.com/en-us/training/paths/get-started-fabric/)** — guided modules covering lakehouse, warehouse, Real-Time Intelligence and more.
+
+## Use the practice assessment well
+
+Microsoft's free practice assessment mirrors the real exam's style and difficulty (not the actual questions). The trick is to take it **twice**:
+
+1. **Early**, before you've studied much — to find your weak domains.
+2. **At the end** — to confirm you're ready across all three.
+
+It's an underused resource. Don't skip it.
+
+## Get your hands dirty
+
+Reading isn't enough for this exam. Spin up a Fabric trial and build:
+
+- your **first lakehouse**, ingesting and transforming sample data;
+- a **pipeline** and a **Dataflow Gen2** doing the same load, so you understand the trade-offs;
+- a tiny **Eventstream + KQL** query, if real-time is new to you.
+
+## Where to go next
+
+- **[Community resources](/dp700/community-resources)** — trustworthy guides from people who've sat the exam.
+</script>
+
+<script type="text/markdown" id="md-dp700-study-plan-and-advice">
+# Study plan & advice
+
+A realistic plan for someone with some data background, putting in **6–8 hours a week**. Stretch the Spark and KQL weeks if either is new to you.
+
+## A 6-week outline
+
+| Week | Focus |
+|---|---|
+| 1 | Read the study guide end to end. Build your first lakehouse; do ingestion + basic transforms. Take the practice assessment **once** to baseline. |
+| 2 | **Ingest & transform** — pipelines, Dataflows Gen2, full vs. incremental loads. |
+| 3 | **Spark** — PySpark notebooks, Spark SQL, the medallion flow Bronze → Silver → Gold. |
+| 4 | **Real-Time Intelligence & KQL** — Eventstreams, Eventhouse, querying data in motion. |
+| 5 | **Manage the solution** — workspaces, security/governance, Git integration, deployment pipelines. |
+| 6 | **Monitor & optimise** — run monitoring, troubleshooting, performance tuning. Retake the practice assessment; review every miss. |
+
+## Advice I'd give my past self
+
+- **KQL is the sleeper topic.** If you come from a SQL-only or other-cloud background, it's the biggest genuinely new skill. Give it dedicated time rather than cramming it last.
+- **Don't skip a domain.** All three are weighted roughly the same, so a weak domain costs you as much as any other.
+- **Learn the docs layout, not just the content.** You'll have Microsoft Learn open during the exam — knowing *where* things live turns lookups into seconds.
+- **Treat the skills list as a checklist.** Every bullet is a potential question. Tick each one only after you've done it hands-on, not just read about it.
+- **Map preview vs. GA.** Fabric moves fast and the exam can include commonly used preview features, so don't assume a feature is out of scope just because it's new.
+
+## Pre-exam checklist
+
+- [ ] Every bullet of the study guide ticked off, hands-on
+- [ ] Practice assessment comfortably passed, twice
+- [ ] Built a lakehouse, a pipeline, a Dataflow Gen2 and a KQL query yourself
+- [ ] Comfortable navigating the Fabric docs quickly
+- [ ] Reviewed security, Git integration and deployment pipelines specifically
+
+## Where to go next
+
+- **[Community resources](/dp700/community-resources)** — extra perspectives from people who've passed.
+</script>
+
+<script type="text/markdown" id="md-dp700-community-resources">
+# Community resources
+
+Beyond Microsoft's own material, a few community members publish genuinely useful, well-maintained DP-700 guides. These are good for a second perspective and for mapping the skills list to specific docs.
+
+## Worth your time
+
+- **Kevin Chant — DP-700 checklist.** A regularly updated checklist that maps the exam objectives to resources and links. A solid companion to the official study guide. ([kevinrchant.com](https://www.kevinrchant.com/))
+- **Andy Cutler — Skills Measured resources.** Walks the official skills-measured list and pairs each item with the relevant Microsoft docs and Learn modules. ([serverlesssql.com](https://www.serverlesssql.com/))
+- **Adam Marczak — free video course.** A free, well-regarded YouTube walkthrough of the Fabric syllabus (architecture, lakehouse, pipelines, notebooks, real-time). Good if you prefer watching to reading.
+- **Exam-taker write-ups.** Several community members (e.g. Sam Debruyn) have published "here's what the exam was like" reflections — useful for calibrating expectations.
+
+> Links to community sites are starting points; people move and rename pages. If one's dead, search the author's name plus "DP-700" and you'll find their latest.
+
+## A word on "dumps"
+
+You'll run into sites selling **exam dumps** — supposedly real exam questions. Skip them. They violate Microsoft's exam policy (and can get your certification revoked), they're frequently wrong or out of date, and they teach you to recognise questions rather than do the job. **Practice questions with explanations** are fine and useful; *verbatim leaked questions* are not. Stick to the official practice assessment and reputable question banks that explain their answers.
+
+## The honest summary
+
+The official study guide plus hands-on time in a Fabric trial will get most people to a pass. Community resources are there to fill gaps and give you confidence — not to replace doing the work.
+</script>
+
+<script type="text/markdown" id="md-blog-welcome">
+# Why I built this site
+
+I kept losing my own notes. A good explanation of OneLake shortcuts in one chat thread, a study link for DP-700 buried in a bookmark folder, a half-written explanation of the medallion pattern in a notebook somewhere. So I gave them a home.
+
+This site is three things:
+
+- a **Fabric Handbook** — the Microsoft Fabric concepts I reach for most often, written the way I'd explain them to a teammate;
+- a **DP-700 Handbook** — a curated route to the Fabric Data Engineer Associate cert, so I'm not re-googling the study guide every time someone asks;
+- a **blog** — looser notes and write-ups, like this one.
+
+I'm a data engineer working across Microsoft Fabric, AWS and Databricks, mostly in SQL, Python and Spark. A lot of what I write here is "things I wish someone had told me earlier." If that's useful to you too, great.
+
+If you want to talk shop — a project, a question, or just comparing notes — the [book a 1-on-1](/resume) link on the About page goes straight to my calendar.
+
+More to come.
+</script>
+
+<script type="text/markdown" id="md-blog-onelake-shortcuts-vs-mirroring">
+# OneLake shortcuts vs mirroring
+
+When you need data that lives *outside* your Fabric workspace, the instinct is to write a copy job. Often you don't have to. Fabric gives you two ways to bring outside data in without standing up your own pipeline: **shortcuts** and **mirroring**. They solve overlapping problems but in different ways.
+
+## Shortcuts: reference in place
+
+A shortcut is a pointer. It makes data that already exists somewhere — another OneLake location, ADLS, Amazon S3, Google Cloud Storage — appear inside your lakehouse as if it were local. Nothing is copied; you're reading the source bytes through a link.
+
+Reach for a shortcut when:
+
+- the data already sits in a lake you can reach, and
+- you want to query it *as it is right now*, with no duplication.
+
+The catch: you're at the mercy of the source's availability and format. If the source is slow or goes away, so does your shortcut.
+
+## Mirroring: a synced copy in open format
+
+Mirroring targets **operational databases** — Azure SQL, Cosmos DB, Snowflake and friends. It replicates the database into OneLake and keeps it in near-real-time sync, landing the data in open Delta format ready for analytics.
+
+Reach for mirroring when:
+
+- the source is a transactional database, not a lake, and
+- you want analytics-ready data without building and operating change-data-capture yourself.
+
+The catch: it *is* a copy (a managed one), so it has its own freshness characteristics and lands as a replicated dataset rather than a live pointer.
+
+## A quick decision
+
+| Question | Lean towards |
+|---|---|
+| Is the source already a data lake? | **Shortcut** |
+| Is the source a transactional database? | **Mirroring** |
+| Do you want zero duplication? | **Shortcut** |
+| Do you want a resilient, synced analytics copy? | **Mirroring** |
+
+Both beat hand-rolling an ingestion job for these cases. Start by asking *what the source actually is* — that usually answers the question for you.
+</script>
+<script>
+(function () {
+  'use strict';
+  var SITE = window.SITE || { profile: {}, categories: [], resume: {} };
+  var appEl = document.getElementById('app');
+  var navEl = document.getElementById('site-nav');
+  var root = document.documentElement;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var forcedPath = null;     // fallback when pushState is unavailable (file://)
+  var currentCat = null;     // id of the category currently rendered
+  var spyIO = null;
+
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function attr(s){return esc(s).replace(/"/g,'&quot;');}
+  function findCat(id){return SITE.categories.filter(function(c){return c.id===id;})[0];}
+  function findArt(cat,slug){return cat.articles.filter(function(a){return a.slug===slug;})[0];}
+  function isExternal(u){return /^https?:\/\//.test(u);}
+  function fmtDate(d){if(!d)return '';var dt=new Date(d+'T00:00:00');if(isNaN(dt))return d;return dt.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});}
+
+  /* ---------- markdown ---------- */
+  function inline(text){
+    var codes=[];
+    text=text.replace(/`([^`]+)`/g,function(m,c){codes.push(c);return '\u0001'+(codes.length-1)+'\u0001';});
+    text=esc(text);
+    text=text.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,function(m,alt,src){return '<img src="'+attr(src)+'" alt="'+attr(alt)+'" loading="lazy">';});
+    text=text.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,function(m,t,url){var ext=isExternal(url);return '<a href="'+attr(url)+'"'+(ext?' target="_blank" rel="noopener noreferrer"':'')+'>'+t+'</a>';});
+    text=text.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/__([^_]+)__/g,'<strong>$1</strong>');
+    text=text.replace(/(^|[^*])\*(?!\s)([^*]+?)\*/g,'$1<em>$2</em>');
+    text=text.replace(/\u0001(\d+)\u0001/g,function(m,n){return '<code>'+esc(codes[n])+'</code>';});
+    return text;
+  }
+  function badgeHeading(level,raw){
+    var badge='',t=raw;
+    var m=t.match(/\s*\[(Basics|Intermediate|Advanced)\]\s*$/);
+    if(m){t=t.slice(0,m.index);badge=' <span class="badge b-'+m[1].toLowerCase()+'">'+m[1]+'</span>';}
+    return '<h'+level+'>'+inline(t)+badge+'</h'+level+'>';
+  }
+  function renderMarkdown(src){
+    src=src.replace(/\r\n?/g,'\n');
+    var blocks=[];
+    src=src.replace(/```(\w*)\n([\s\S]*?)```/g,function(m,lang,code){
+      var esc2=code.replace(/\n$/,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      blocks.push('<div class="code"><div class="code-head"><span class="lang">'+(lang||'code')+'</span><button class="copy" type="button">copy</button></div><pre><code>'+esc2+'</code></pre></div>');
+      return '\u0000'+(blocks.length-1)+'\u0000';
+    });
+    var lines=src.split('\n'),out=[],i=0;
+    function isTableSep(s){return /^\s*\|?[\s:|-]*-[\s:|-]*\|?\s*$/.test(s)&&s.indexOf('-')!==-1;}
+    function splitRow(s){return s.replace(/^\s*\|/,'').replace(/\|\s*$/,'').split('|').map(function(c){return c.trim();});}
+    while(i<lines.length){
+      var line=lines[i];
+      if(/^\u0000\d+\u0000$/.test(line.trim())){out.push(blocks[+line.trim().replace(/\u0000/g,'')]);i++;continue;}
+      if(/^\s*$/.test(line)){i++;continue;}
+      var h=line.match(/^(#{1,6})\s+(.*)$/);
+      if(h){out.push(badgeHeading(h[1].length,h[2]));i++;continue;}
+      if(/^\s*([-*_])\1{2,}\s*$/.test(line)){out.push('<hr>');i++;continue;}
+      if(line.indexOf('|')!==-1&&i+1<lines.length&&isTableSep(lines[i+1])){
+        var head=splitRow(line);i+=2;var rows=[];
+        while(i<lines.length&&lines[i].indexOf('|')!==-1&&lines[i].trim()!==''){rows.push(splitRow(lines[i]));i++;}
+        var t='<table><thead><tr>';head.forEach(function(c){t+='<th>'+inline(c)+'</th>';});t+='</tr></thead><tbody>';
+        rows.forEach(function(r){t+='<tr>';head.forEach(function(_,idx){t+='<td>'+inline(r[idx]||'')+'</td>';});t+='</tr>';});
+        t+='</tbody></table>';out.push(t);continue;
+      }
+      if(/^\s*>\s?/.test(line)){
+        var q=[];while(i<lines.length&&/^\s*>\s?/.test(lines[i])){q.push(lines[i].replace(/^\s*>\s?/,''));i++;}
+        var qt=q.join('\n');
+        var cm=qt.match(/^\[!(NOTE|TIP|WARNING|CAUTION)\]\s*/);
+        if(cm){
+          var ty=cm[1].toLowerCase();
+          var label={note:'Note',tip:'Tip',warning:'Watch out',caution:'Avoid'}[ty];
+          out.push('<div class="cb cb-'+ty+'"><span class="cb-l">'+label+'</span><p>'+inline(qt.replace(/^\[!(NOTE|TIP|WARNING|CAUTION)\]\s*/,''))+'</p></div>');
+        } else {
+          out.push('<blockquote>'+inline(qt.replace(/\n/g,' '))+'</blockquote>');
+        }
+        continue;
+      }
+      if(/^\s*[-*]\s+/.test(line)){
+        var items=[];
+        while(i<lines.length&&/^\s*[-*]\s+/.test(lines[i])){
+          var it=lines[i].replace(/^\s*[-*]\s+/,'');var task=it.match(/^\[([ xX])\]\s+(.*)$/);
+          if(task){items.push('<li class="task"><span class="box'+(task[1].toLowerCase()==='x'?' done':'')+'"></span>'+inline(task[2])+'</li>');}
+          else{items.push('<li>'+inline(it)+'</li>');}i++;
+        }
+        out.push('<ul>'+items.join('')+'</ul>');continue;
+      }
+      if(/^\s*\d+\.\s+/.test(line)){var oi=[];while(i<lines.length&&/^\s*\d+\.\s+/.test(lines[i])){oi.push('<li>'+inline(lines[i].replace(/^\s*\d+\.\s+/,''))+'</li>');i++;}out.push('<ol>'+oi.join('')+'</ol>');continue;}
+      var para=[];
+      while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^(#{1,6})\s/.test(lines[i])&&!/^\s*[-*]\s+/.test(lines[i])&&!/^\s*\d+\.\s+/.test(lines[i])&&!/^\s*>\s?/.test(lines[i])&&!/^\u0000\d+\u0000$/.test(lines[i].trim())){para.push(lines[i]);i++;}
+      if(para.length)out.push('<p>'+inline(para.join(' '))+'</p>');
+    }
+    return out.join('\n');
+  }
+
+  /* ---------- home ---------- */
+  function profileCardHtml(){
+    var p=SITE.profile;
+    var tools=(p.tools||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('');
+    var initials=(p.name||'BN').split(/\s+/).map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+    var btns='';
+    if(p.calendly)btns+='<a class="btn btn-primary" href="'+attr(p.calendly)+'" target="_blank" rel="noopener noreferrer">Book a 1-on-1</a>';
+    if(p.linkedin)btns+='<a class="btn btn-ghost" href="'+attr(p.linkedin)+'" target="_blank" rel="noopener noreferrer">LinkedIn</a>';
+    if(p.github)btns+='<a class="btn btn-ghost" href="'+attr(p.github)+'" target="_blank" rel="noopener noreferrer">GitHub</a>';
+    if(p.email)btns+='<a class="btn btn-ghost" href="mailto:'+attr(p.email)+'">Email</a>';
+    return '<div class="author-card reveal"><div class="author-avatar" aria-hidden="true"><span>'+esc(initials)+'</span></div>'+
+      '<div class="author-body"><h3 class="author-name">'+esc(p.name)+'</h3>'+
+      '<p class="author-role">'+esc(p.role)+(p.tagline?' \u00b7 '+esc(p.tagline):'')+'</p>'+
+      '<p class="author-intro">'+esc(p.bio)+'</p><div class="tags">'+tools+'</div>'+
+      '<div class="contact-actions">'+btns+'</div></div></div>';
+  }
+  function viewHome(){
+    document.title=SITE.profile.name+' \u00b7 Data Engineer';
+    var cards=SITE.categories.map(function(c){
+      var n=c.articles.length,label=n+(n===1?' entry':' entries');
+      return '<a class="cat-card" href="/'+c.id+'"><span class="cat-kind">'+esc(c.kind==='blog'?'Blog':'Handbook')+'</span>'+
+        '<h3>'+esc(c.title)+'</h3><p>'+esc(c.blurb)+'</p><span class="cat-meta">'+label+' \u2192</span></a>';
+    }).join('');
+    return '<div class="home"><section class="hero"><div class="hero-weave" aria-hidden="true"></div>'+
+      '<p class="eyebrow">'+esc(SITE.profile.role)+' \u00b7 working notes</p>'+
+      '<h1>Data engineering, <span class="accent">written down</span>.</h1>'+
+      '<p class="lede">'+esc(SITE.profile.heroLede)+'</p></section>'+
+      '<section class="block"><div class="block-head"><h2>Browse</h2></div><div class="cat-grid">'+cards+'</div></section>'+
+      '<section class="block"><div class="block-head"><h2>About me</h2></div>'+profileCardHtml()+'</section></div>';
+  }
+
+  /* ---------- category ---------- */
+  function articleSection(cat,art){
+    var el=document.getElementById(art.body);
+    var srcmd=el?el.textContent:'';
+    var html=renderMarkdown(srcmd);
+    if(cat.kind==='blog'&&art.date){
+      html=html.replace('</h1>','</h1>\n<p class="sec-date">'+esc(fmtDate(art.date))+'</p>');
+    }
+    return '<section class="doc" id="sec-'+art.slug+'">'+html+'</section>';
+  }
+  function viewCategory(cat){
+    document.title=cat.title+' \u00b7 '+SITE.profile.name;
+    var arts=cat.articles.slice();
+    if(cat.kind==='blog')arts.sort(function(a,b){return (b.date||'').localeCompare(a.date||'');});
+    var toc=arts.map(function(a){
+      var d=cat.kind==='blog'&&a.date?'<span class="toc-date">'+esc(fmtDate(a.date))+'</span>':'';
+      return '<a href="/'+cat.id+'/'+a.slug+'" data-slug="'+a.slug+'">'+esc(a.title)+d+'</a>';
+    }).join('');
+    var content=arts.map(function(a){return articleSection(cat,a);}).join('');
+    return '<div class="cat-page">'+
+      '<aside class="cat-side"><div class="cat-side-head">'+esc(cat.title)+'</div>'+
+      '<button class="cat-side-toggle" id="tocToggle" type="button">Sections <span aria-hidden="true">\u25be</span></button>'+
+      '<nav class="cat-toc" id="catToc">'+toc+'</nav></aside>'+
+      '<div class="cat-main">'+
+      '<div class="cat-topbar"><div class="search"><span class="mag" aria-hidden="true">\u2315</span>'+
+      '<input id="catSearch" type="text" placeholder="Search '+esc(cat.title)+'\u2026" autocomplete="off" aria-label="Search this section"><span class="key">/</span></div></div>'+
+      '<div class="cat-intro"><h1>'+esc(cat.title)+'</h1><p class="lede">'+esc(cat.blurb)+'</p></div>'+
+      '<div class="cat-content" id="catContent">'+content+'</div></div></div>';
+  }
+
+  function cardify(){
+    document.querySelectorAll('#catContent section.doc').forEach(function(sec){
+      var cur=null;
+      Array.prototype.slice.call(sec.children).forEach(function(el){
+        if(el.tagName==='H1'){cur=null;return;}
+        if(el.classList&&el.classList.contains('sec-date')){cur=null;return;}
+        if(el.tagName==='H2'){cur=document.createElement('div');cur.className='card';sec.insertBefore(cur,el);cur.appendChild(el);}
+        else{if(!cur){cur=document.createElement('div');cur.className='card';sec.insertBefore(cur,el);}cur.appendChild(el);}
+      });
+    });
+  }
+  function wireCopy(){
+    document.querySelectorAll('#catContent .copy').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var code=btn.closest('.code').querySelector('code').innerText;
+        if(navigator.clipboard){navigator.clipboard.writeText(code).then(function(){btn.textContent='copied';btn.classList.add('done');setTimeout(function(){btn.textContent='copy';btn.classList.remove('done');},1300);});}
+      });
+    });
+  }
+  function setActiveToc(slug){
+    document.querySelectorAll('#catToc a').forEach(function(a){a.classList.toggle('active',a.getAttribute('data-slug')===slug);});
+  }
+  function buildSpy(){
+    if(spyIO)spyIO.disconnect();
+    var secs=document.querySelectorAll('#catContent section.doc');
+    if(!('IntersectionObserver' in window)||!secs.length)return;
+    spyIO=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){if(e.isIntersecting){setActiveToc(e.target.id.replace(/^sec-/,''));}});
+    },{rootMargin:'-15% 0px -78% 0px'});
+    secs.forEach(function(s){spyIO.observe(s);});
+  }
+  function scrollToSection(slug){
+    var el=document.getElementById('sec-'+slug);
+    if(el){el.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});setActiveToc(slug);}
+  }
+  function wireSearch(){
+    var q=document.getElementById('catSearch');if(!q)return;
+    q.addEventListener('input',function(){
+      var t=q.value.trim().toLowerCase();
+      document.querySelectorAll('#catContent section.doc').forEach(function(sec){
+        var title=(sec.querySelector('h1')?sec.querySelector('h1').textContent:'').toLowerCase();
+        var titleHit=title.indexOf(t)!==-1;var any=false;
+        sec.querySelectorAll('.card').forEach(function(c){
+          var hit=!t||titleHit||c.textContent.toLowerCase().indexOf(t)!==-1;
+          c.style.display=hit?'':'none';if(hit)any=true;
+        });
+        sec.style.display=(!t||any||titleHit)?'':'none';
+      });
+    });
+  }
+  function wireToggle(){
+    var btn=document.getElementById('tocToggle'),toc=document.getElementById('catToc');
+    if(!btn||!toc)return;
+    if(window.matchMedia('(max-width:980px)').matches)toc.classList.add('collapsed');
+    btn.addEventListener('click',function(){toc.classList.toggle('collapsed');});
+    toc.addEventListener('click',function(e){if(e.target.closest('a')&&window.matchMedia('(max-width:980px)').matches)toc.classList.add('collapsed');});
+  }
+
+  /* ---------- resume ---------- */
+  function viewResume(){
+    var r=SITE.resume||{};
+    document.title='Resume \u00b7 '+(r.name||SITE.profile.name);
+    var c=r.contacts||{};
+    var contacts='';
+    if(c.email)contacts+='<a href="mailto:'+attr(c.email)+'">'+esc(c.email)+'</a>';
+    if(c.linkedin)contacts+='<span class="dot">\u00b7</span><a href="'+attr(c.linkedinUrl||('https://'+c.linkedin))+'" target="_blank" rel="noopener noreferrer">'+esc(c.linkedin)+'</a>';
+    if(c.phone)contacts+='<span class="dot">\u00b7</span><span>'+esc(c.phone)+'</span>';
+    if(c.location)contacts+='<span class="dot">\u00b7</span><span>'+esc(c.location)+'</span>';
+    var actions='';
+    if(r.pdf)actions+='<a class="btn btn-primary" href="/'+attr(r.pdf)+'" target="_blank" rel="noopener noreferrer">Download PDF</a>';
+    if(SITE.profile.calendly)actions+='<a class="btn btn-ghost" href="'+attr(SITE.profile.calendly)+'" target="_blank" rel="noopener noreferrer">Book a 1-on-1</a>';
+    var skills=(r.skills||[]).map(function(s){return '<div class="skill-row"><div class="k">'+esc(s.label)+'</div><div class="v">'+esc(s.value)+'</div></div>';}).join('');
+    var xp=(r.experience||[]).map(function(e){
+      var b=(e.bullets||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('');
+      return '<div class="xp"><div class="xp-head"><div><span class="xp-role">'+esc(e.role)+'</span>, <span class="xp-org">'+esc(e.org)+'</span> \u2013 '+esc(e.location)+'</div><div class="xp-dates">'+esc(e.dates)+'</div></div><ul>'+b+'</ul></div>';
+    }).join('');
+    var proj=(r.projects||[]).map(function(p){
+      var b=(p.bullets||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('');
+      return '<div class="xp"><div class="proj-name">'+esc(p.name)+'</div><div class="proj-stack">'+esc(p.stack)+'</div><ul>'+b+'</ul></div>';
+    }).join('');
+    var edu=(r.education||[]).map(function(e){return '<div class="edu-row"><div><span class="edu-school">'+esc(e.school)+'</span> \u2013 <span class="edu-degree">'+esc(e.degree)+'</span></div><div class="edu-date">'+esc(e.date)+'</div></div>';}).join('');
+    return '<div class="resume reveal"><div class="resume-head"><h1>'+esc(r.name||'')+'</h1>'+
+      '<p class="resume-title">'+esc(r.title||'')+'</p>'+
+      '<div class="resume-contacts">'+contacts+'</div>'+
+      '<div class="resume-actions">'+actions+'</div></div>'+
+      '<section><h2>Summary</h2><p class="resume-summary">'+esc(r.summary||'')+'</p></section>'+
+      '<section><h2>Skills</h2>'+skills+'</section>'+
+      '<section><h2>Experience</h2>'+xp+'</section>'+
+      (proj?'<section><h2>Projects</h2>'+proj+'</section>':'')+
+      '<section><h2>Education</h2>'+edu+'</section></div>';
+  }
+
+  function notFound(){
+    return '<div class="crumbs"><a href="/">Home</a> / Not found</div><div class="home"><section class="block"><h1>Not found</h1><p class="empty">That page doesn\u2019t exist. <a href="/">Back home</a>.</p></section></div>';
+  }
+
+  /* ---------- routing ---------- */
+  function currentPath(){return forcedPath||location.pathname;}
+  function parsePath(){
+    var p=currentPath().replace(/^\/+|\/+$/g,'');
+    if(p===''||p==='home'||/\.html?$/i.test(p))return ['home'];
+    return p.split('/');
+  }
+  function navigate(path){
+    forcedPath=null;
+    try{history.pushState({},'',path);}catch(e){forcedPath=path;}
+    render();
+  }
+  function render(){
+    var parts=parsePath(),html,cat=null,slug=null;
+    if(parts[0]==='resume'){html=viewResume();}
+    else if(parts[0]==='home'){html=viewHome();}
+    else{cat=findCat(parts[0]);if(cat){slug=parts[1]||null;html=viewCategory(cat);}else{html=notFound();}}
+    appEl.innerHTML=html;
+    currentCat=cat?cat.id:null;
+    appEl.classList.remove('view-enter');
+    if(!reduceMotion){void appEl.offsetWidth;appEl.classList.add('view-enter');}
+    setActiveNav(parts);
+    if(cat){
+      cardify();wireCopy();wireSearch();wireToggle();buildSpy();
+      if(slug){setTimeout(function(){scrollToSection(slug);},60);}
+      else{window.scrollTo(0,0);}
+    }else{window.scrollTo(0,0);}
+  }
+
+  /* ---------- nav ---------- */
+  function buildNav(){
+    var links=['<a href="/" data-route="home">Home</a>'];
+    SITE.categories.forEach(function(c){links.push('<a href="/'+c.id+'" data-route="c:'+c.id+'">'+esc(c.title)+'</a>');});
+    links.push('<a href="/resume" data-route="resume">Resume</a>');
+    navEl.innerHTML=links.join('');
+  }
+  function setActiveNav(parts){
+    var key='home';
+    if(parts[0]==='resume')key='resume';
+    else if(parts[0]!=='home'&&findCat(parts[0]))key='c:'+parts[0];
+    Array.prototype.forEach.call(navEl.querySelectorAll('a'),function(a){a.classList.toggle('is-active',a.getAttribute('data-route')===key);});
+  }
+
+  /* ---------- link interception (clean URLs) ---------- */
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a');if(!a)return;
+    var href=a.getAttribute('href');if(!href)return;
+    if(a.target==='_blank'||a.hasAttribute('download')||e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0)return;
+    if(href.charAt(0)!=='/'||href.charAt(1)==='/')return;            // only internal absolute paths
+    var last=href.split('?')[0].split('#')[0].split('/').pop();
+    if(last.indexOf('.')!==-1)return;                                 // file (e.g. the PDF) -> let it load
+    e.preventDefault();
+    var np=href.replace(/^\/+|\/+$/g,'').split('/').filter(Boolean);
+    // same-category in-page jump: scroll instead of full re-render
+    if(np[0]&&np[0]===currentCat&&np[1]){
+      forcedPath=null;
+      try{history.pushState({},'',href);}catch(err){forcedPath=href;}
+      scrollToSection(np[1]);
+      return;
+    }
+    navigate(href);
+  });
+  window.addEventListener('popstate',function(){forcedPath=null;render();});
+
+  /* ---------- theme + keys + boot ---------- */
+  document.getElementById('theme-toggle').addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('bn-theme',next);}catch(e){}
+  });
+  document.addEventListener('keydown',function(e){
+    var q=document.getElementById('catSearch');if(!q)return;
+    if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus();}
+    if(e.key==='Escape'&&document.activeElement===q){q.value='';q.dispatchEvent(new Event('input'));q.blur();}
+  });
+  var y=document.getElementById('year');if(y)y.textContent=new Date().getFullYear();
+  buildNav();render();
+})();
+
+</script>
+</body>
+</html>
